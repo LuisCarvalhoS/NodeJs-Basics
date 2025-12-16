@@ -10,14 +10,14 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
       minLength: 1,
-      maxLenght: 30,
+      maxLength: 30,
     },
 
     password: {
       type: String,
       required: true,
       minLength: 6,
-      maxLenght: 50,
+      maxLength: 50,
     },
 
     email: {
@@ -34,12 +34,10 @@ const userSchema = new Schema(
   }
 );
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
-
-  next();
 });
 
 userSchema.methods.comparePassword = async function (password) {
